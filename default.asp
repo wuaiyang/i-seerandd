@@ -1,0 +1,4 @@
+<%
+	 response.Redirect("index.html")
+
+%>

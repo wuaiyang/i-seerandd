@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>作业3</title>
+  <style>
+
+  .m-form{
+    min-height:400px;
+  }
+  .m-form div{
+    padding: 10px 0;
+  }
+  .m-form label{
+    margin: 0 15px 0 10px;
+  }
+  .m-form .txt{
+    width:180px;
+    height: 30px;
+  }
+  .m-form select{
+    width:100px;
+    height: 30px;
+  }
+  .m-form textarea{
+    width:200px;
+  }
+  .m-form .btn{
+    width:75px;
+    height:30px;
+    margin-left: 52px;
+    background-color: #d853b7;
+    color: white;
+    font-weight: bold;
+  }
+  </style>
+ 
+</head>
+<body>
+  <form class="m-form" action="contact.asp"  method="post" >
+  <input type="hidden" name="action" value="add" />
+    <div>
+      <label for="name">姓&nbsp名：<span>*</span></label>
+      <input name="name" type="text" id="name"/>
+    </div>  
+    <div>
+      <label for="email">邮&nbsp箱：<spa>*</span></label>
+      <input name="email" type="text" id="email"/>
+    </div>
+    <div>
+      <label for="myTel">电&nbsp话：</label>
+      <input name="myTel" type="text" id="myTel"/>
+    </div>
+    <div>
+      <label for="myAddress">地&nbsp址：</label>
+      <input name="myAddress" type="text" id="myAddress" />
+    </div>
+    <div>
+      <label for="myCity">城&nbsp市：<spa>*</span></label>
+      <input name="myCity" type="text" id="myCity"/>
+    </div>
+    <div>
+      <label for="myCountry">国&nbsp家：<spa>*</span></label>
+      <input name="myCountry" type="text" id="myCountry"/>
+    </div>
+    <div>
+      <label for="content">内&nbsp容：<spa>*</span></label>
+      <textarea name="content" id="content" cols="45" rows="8"></textarea>
+    </div>
+    <div>
+      dsjfsdljlsj
+    </div>
+    <div class="btnWapper">
+       <button class="btn" type="reset">取&nbsp消</button>
+       <button class="btn" type="submit">提&nbsp交</button>
+    </div>
+   
+  </form>
+</body>
+</html>
