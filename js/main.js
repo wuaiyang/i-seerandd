@@ -5,7 +5,7 @@ app.iNow =0;
 app.init = function(){
 	app.resize();
 	app.mainAnimate(); 
-  app.getProduct();
+  app.createTab();
   app.submenuInit();
 	app.events();
 
@@ -18,10 +18,12 @@ $(document).ready(app.init);
 app.events = function(){
    $(window).resize(app.resize); //屏幕大小改变
    app.slide();
+   app.proTab();
    app.submenu();
    app.orderInfo();
    app.checkForm();
    app.sent();
+   app.rightManu();
 }
 
 //submenu事件
@@ -29,9 +31,10 @@ app.submenu = function(){
   var $page2 = $(".page2");
   var $submenu2 = $(".p2-submenu");
   app.submenuAnimate($page2,$submenu2);
-  var $page3 = $(".page3");
-  var $submenu3 = $(".p3-submenu");
-  app.submenuAnimate($page3,$submenu3);
+  var Len = $(".p3-submenu").length;
+  for(var i=0; i<Len;i++){
+    app.submenuAnimate($(".product"+(i+1)),$(".sub"+(i+1)));   
+  }
   app.submenuHover();
 }
 
@@ -61,12 +64,12 @@ app.submenuAnimate = function($page,$submenu){
   $(window).scroll(submenuScroll);
 
   function submenuScroll(){
+
     var changTop = $(window).scrollTop() + $(window).height()/2; 
 
     for(var i= 0;i<$h2.length;i++){
       var sqrtTop = $($h2[i]).offset().top;
       var sqrtBottom = $($h2[i]).offset().top + $($h2[i]).parent().parent().height();
-
       if(sqrtTop<changTop && sqrtBottom>changTop){
         for(var j=0;j<$num.length;j++){
             $($num[j]).css({"background":"#d4d2ff","color":"#505797"});
@@ -107,18 +110,53 @@ app.mainAnimate = function(){
     	 $(".backPic1").animate({"opacity":1},500,"linear");
     };
 }
+
+//右边导航
+app.rightManu = function(){
+  var timer1;
+  var timer2;
+  var btn = $(".mobileBtn");
+  var menu = $(".right-nav")
+  btn.on("mouseenter",function(){
+    clearTimeout(timer1);
+    clearTimeout(timer2);
+    menu.css("display","block").animate({"opacity":1},500,"linear");
+  }).on("mouseleave",function(){
+    timer1 = setTimeout(function(){
+      menu.css("display","none").animate({"opacity":0},500,"linear");
+    },300)      
+  })
+
+  menu.on("mouseenter",function(){
+    clearTimeout(timer1);
+    clearTimeout(timer2);
+    menu.css("display","block").animate({"opacity":1},500,"linear");
+  }).on("mouseleave",function(){
+     timer2 = setTimeout(function(){
+      menu.css("display","none").animate({"opacity":0},500,"linear");
+    },300)       
+  })
+
+}
 //主页面slide效果
 app.slide = function(){
   var $navLis = $(".nav li");
+  var $rightLis = $(".right-nav li");
   var $pageLis = $(".page");
 
+
   $navLis.on('click',slideChange);
+  $rightLis.on('click',rightLis);
+
+  function rightLis(){
+     $navLis.eq($(this).index()).click();
+  }
 
   function slideChange(){
   	clearTimeout(timer);
 
   	var timer = setTimeout($.proxy(function(){
-		$(this).attr("class","selected").siblings().attr("class","");
+		    $(this).attr("class","selected").siblings().attr("class","");
 		    var index =  $(this).index();
         //根据内容长度设置页面高度
         var pageHeight = $pageLis.eq(index).find(".main_wrapper").height() + 208;
@@ -134,7 +172,8 @@ app.slide = function(){
         }
 
         if(index == 2){
-          $(".p3-submenu").css("display","block").animate({"opacity":1},1000,"linear");
+          $(".p3-submenu").css("display","none").css("opacity",0);
+          $(".subSelected").css("display","block").animate({"opacity":1},1000,"linear");
         }else{
           $(".p3-submenu").css("display","none").css("opacity",0);
         }
@@ -155,18 +194,31 @@ app.slide = function(){
 		},this),100);
 		
   }
+
+ 
 }
 
 //根据页面创建submenu
 app.submenuInit = function(){
   var $page2 = $(".page2");
+  var $page3 = $(".page3");
   var $submenu2 = $(".p2-submenu");
   app.createSubmenu($page2,$submenu2);
-  var $page3 = $(".page3");
-  var $submenu3 = $(".p3-submenu");
-  app.createSubmenu($page3,$submenu3);
+  var productLen = pTab.length;
+  var $sub = $(".sub1");
+  for(var i=1;i<productLen;i++){
+    var $div = $("<div></div>");
+    $div.attr("class","submenu p3-submenu sub"+(i+1));
+    $div.html($sub.html());
+    $page3.append($div);
+  };
+
+  for(var i=0; i<productLen;i++){
+    app.createSubmenu($(".product"+(i+1)),$(".sub"+(i+1)));   
+  };
 }
 
+//创建submenu
 app.createSubmenu = function($page,$submenu){
   var $h2 = $page.find("h2");
   var $back = $submenu.find(".back");
@@ -205,12 +257,12 @@ app.orderInfo = function(){
   function infoChange(){
     $(this).attr("class","choosed").siblings().attr("class","");
     $($li).eq($(this).index()).attr("class","choosed").siblings().attr("class","");
-    var tandH = $($li).eq($(this).index()).position().top+$($li).eq($(this).index()).outerHeight(true)/2-42;
+    var tandH = $($li).eq($(this).index()).position().top+$($li).eq($(this).index()).outerHeight(true)/2-35;
     var pLeft = $(this).position().left + $(this).width()/2;
     var rowW = $($li).eq($(this).index()).position().left-pLeft-10;
-    $(".orderPoint").css("left",pLeft+12);
-    $(".tand").css("left",pLeft+17).css("height",tandH);
-    $(".row").css("left",pLeft+17).css("top",tandH+42).css("width",rowW);
+    $(".orderPoint").css("left",pLeft+8);
+    $(".tand").css("left",pLeft+13).css("height",tandH);
+    $(".row").css("left",pLeft+13).css("top",tandH+35).css("width",rowW);
 
   }
 }
@@ -244,7 +296,6 @@ app.checkForm =function(){
           $(this).addClass("ok");
         }
       }
-      console.log($(".p4-form").find(".ok").length);
       if($(".p4-form").find(".ok").length == 5){
         $btn.removeAttr("disabled");
       } 
@@ -258,7 +309,6 @@ app.sent = function(){
   $btn.on('click',ajaxSent);
 
   function ajaxSent(){
-    console.log($(".p4-form").serialize());
       $.ajax({    
         type:'post',        
         url:'contact.asp',    
@@ -284,13 +334,74 @@ app.infoAlert = function(){
     $($input[i]).val("");
   };
   $("#content").val("");
-
 }
 
-//初始化产品信息
-app.getProduct = function(){
-  var $p3 = $(".page3 .main_wrapper .p3-sqrtWapper:last-child");
-  //产品部分添加
+//tab切换
+app.proTab = function(){
+  var $tab = $(".p3_tab").find("input");
+  var $tabBox = $(".p3-tabs").find(".product");
+  $tab.on("click",function(){
+    var index=$(this).index();
+    $tab.removeClass("tabSelected");
+    $(this).addClass("tabSelected");
+    $tabBox.removeClass("proSelect");
+    $tabBox.eq($(this).index()).addClass("proSelect");
+    $(".p3-submenu").removeClass("subSelected");
+    $(".sub"+(index+1)).addClass("subSelected");
+    var $pageLis = $(".page");
+    var pageHeight = $(".p3-tabs").height() + 208;
+    $pageLis.eq(app.iNow).css("height",pageHeight);
+    $(".page_wrapper").height(Math.round(pageHeight));
+    $(".p3-submenu").css("display","none").css("opacity",0);
+    $(".subSelected").css("display","block").animate({"opacity":1},1000,"linear");
+    var Len = $(".p3-submenu").length;
+    for(var i=0; i<Len;i++){
+    app.submenuAnimate($(".product"+(i+1)),$(".sub"+(i+1)));   
+    }
+  })
+   
+}
+
+//创建产品栏
+app.createTab = function(){
+  pTab = pTab || [];
+  var $tab = $(".p3_tab");
+  var $ul = $(".p3-tabs");
+  for(var i=0;i<pTab.length;i++){
+    var $input = $("<input type='button'>");
+    $input.attr("value",pTab[i].title);
+    if(i == 0){
+      $input.attr("class","tabSelected");
+    }
+    $tab.append($input);
+    if( i > 0){
+      var $tabBox = $("<li></li>");
+      $tabBox.attr("class","product product"+(i+1));
+      $ul.append($tabBox);
+    }
+  };
+  app.createData($ul);
+}
+
+app.createData = function($ul){
+  var $li = $ul.find(".product");
+  for(var i=0; i<$li.length; i++){
+    if(pTab[i].productsData){
+      app.createPd(pTab[i].productsData, $li[i]);
+    };
+    if(pTab[i].productsTable){
+      app.createTb(pTab[i].productsTable, $li[i]);
+    };
+    if(pTab[i].dtuData){
+      app.createDt(pTab[i].dtuData, $li[i]);
+    };
+    if(pTab[i].dimData){
+      app.createDi(pTab[i].dimData, $li[i]);
+    }
+  }      
+}
+
+app.createPd = function(productsData,tab){
   for(var i =0; i<productsData.length;i++){
     var $sqrtWapper = $("<div></div>");
     $sqrtWapper.attr("class","p3-sqrtWapper");
@@ -339,9 +450,16 @@ app.getProduct = function(){
         $sqrt.append($title).append($introduce).append($pWapper);
       $size.append($sqrt);
     $sqrtWapper.append($size);
-    $p3.before($sqrtWapper);
+    $p3order = $(tab).children(".p3-order");
+    if($p3order.length>0){
+      $p3order.before($sqrtWapper);
+    }else{
+      $(tab).append($sqrtWapper);
+    }   
   };
+}
 
+app.createTb = function(productsTable,tab){
   for(var i =0; i<productsTable.length;i++){
     var $sqrtWapper = $("<div></div>");
     $sqrtWapper.attr("class","p3-sqrtWapper");
@@ -365,9 +483,16 @@ app.getProduct = function(){
           }         
       $size.append($sqrt);
     $sqrtWapper.append( $size);
-    $p3.before($sqrtWapper);
+    $p3order = $(tab).children(".p3-order");
+    if($p3order.length>0){
+      $p3order.before($sqrtWapper);
+    }else{
+      $(tab).append($sqrtWapper);
+    }   
   };
+}
 
+app.createDt = function(dtuData,tab){
   for(var i =0; i<dtuData.length;i++){
     var $sqrtWapper = $("<div></div>");
     $sqrtWapper.attr("class","p3-sqrtWapper");
@@ -391,9 +516,15 @@ app.getProduct = function(){
           $sqrt.append($title).append($introduce).append($img);
       $size.append($sqrt);
     $sqrtWapper.append( $size);
-    $p3.before($sqrtWapper);
+    if($p3order.length>0){
+      $p3order.before($sqrtWapper);
+    }else{
+      $(tab).append($sqrtWapper);
+    }   
   };
+}
 
+app.createDi =function(dimData,tab){
   for(var i =0; i<dimData.length;i++){
     var $sqrtWapper = $("<div></div>");
     $sqrtWapper.attr("class","p3-sqrtWapper");
@@ -427,7 +558,11 @@ app.getProduct = function(){
           
       $size.append($sqrt);
      $sqrtWapper.append( $size);
-    $p3.before($sqrtWapper);
+    if($p3order.length>0){
+      $p3order.before($sqrtWapper);
+    }else{
+      $(tab).append($sqrtWapper);
+    } 
   }
 }
 
@@ -445,10 +580,10 @@ app.resize = function(){
   app.slideposition();
   var $span = $(".orderInfo").find(".choosed");
   var $li =$(".orderDetil").find(".choosed");
-  var tandH = $($li).position().top+$($li).outerHeight(true)/2-42;
+  var tandH = $($li).position().top+$($li).outerHeight(true)/2-35;
   var pLeft =$($span).position().left + $($span).width()/2;
   var rowW = $($li).position().left-pLeft-10;
-  $(".orderPoint").css("left",pLeft+12);
-  $(".tand").css("left",pLeft+17).css("height",tandH);
-  $(".row").css("left",pLeft+17).css("top",tandH+42).css("width",rowW);
+  $(".orderPoint").css("left",pLeft+8);
+  $(".tand").css("left",pLeft+13).css("height",tandH);
+  $(".row").css("left",pLeft+13).css("top",tandH+35).css("width",rowW);
 }
